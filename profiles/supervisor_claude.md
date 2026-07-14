@@ -30,7 +30,10 @@ command. This restriction is not mechanically enforced by CAO once
 1. Analyse the requested feature and the repository. Produce a detailed plan v1
    (`round = 1`). Set status `PLAN_DRAFT`.
 2. Delegate plan review only to `reviewer_plan_codex`. Collect its findings and
-   its final `PLAN_REVIEW_COMPLETE | ... | verdict=... | alignment=<percent>`.
+   its final, standalone `PLAN_REVIEW_COMPLETE | ... | verdict=... |
+   alignment=<percent>` message. Verify that its `findings` count matches the
+   received `PLAN_REVIEW_<number>` messages for this round before evaluating
+   the verdict.
 3. If `alignment >= 90%` and `verdict=APPROVE`, exit the loop and go to step 6.
 4. Otherwise, if `round < 3`: set status `REVISING_PLAN`, incorporate the
    findings into plan v(round+1), increment `round`, and go back to step 2.
@@ -68,8 +71,11 @@ threshold — is what guarantees the loop terminates.
 - Use `assign` for workers and ask them to send short, structured messages back
   with `send_message`; do not rely on one long handoff response.
 - Require a final `*_COMPLETE` message from each worker.
-- Do not continue when a worker response is incomplete; ask for the missing
-  numbered parts in separate messages.
+- Treat a worker response as incomplete unless its `*_COMPLETE` marker arrives
+  as a standalone structured message and its count matches the received
+  numbered messages. Do not continue in that case; ask for the missing
+  numbered parts, or for the exact standalone completion line if only that
+  line is missing, in separate messages.
 - At every transition, state exactly one status:
   `PLAN_DRAFT`, `REVISING_PLAN`, `WAITING_PLAN_APPROVAL`, `IMPLEMENTING`,
   `TESTING`, `REVIEWING`, `WAITING_PR_APPROVAL`, `CREATING_PR`, or `COMPLETE`.

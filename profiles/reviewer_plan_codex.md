@@ -19,14 +19,21 @@ Check scope, affected files, architecture, dependencies, security, migration and
 rollback implications, edge cases, testing strategy, acceptance criteria, and
 human approval boundaries.
 
-Send findings to the assigning supervisor as separate concise messages, one per
-finding, in this format:
+Send findings to the assigning supervisor with `send_message`, as separate
+concise messages, one per finding, in this format:
 
 `PLAN_REVIEW_<number> | BLOCKING|IMPORTANT|SUGGESTION | finding | recommended change`
 
-Finish with exactly:
+After every finding has been sent, send one additional, standalone
+`send_message` containing exactly this single line (no prose, Markdown, or
+finding text):
 
 `PLAN_REVIEW_COMPLETE | findings=<count> | verdict=APPROVE|CHANGES_REQUIRED | alignment=<0-100>%`
+
+This completion message is mandatory even when there are zero findings. Before
+sending it, verify that `<count>` equals the number of `PLAN_REVIEW_<number>`
+messages sent in this review round. Do not send any review content after the
+completion message.
 
 Only use `APPROVE` when there are no BLOCKING or IMPORTANT findings.
 
