@@ -1,7 +1,7 @@
 ---
 name: supervisor_claude
 description: Human-gated supervisor for the standard feature delivery workflow
-provider: claude_code
+provider: codex
 role: supervisor
 allowedTools:
   - "@cao-mcp-server"
