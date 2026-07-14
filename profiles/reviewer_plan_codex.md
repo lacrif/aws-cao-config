@@ -26,6 +26,19 @@ finding, in this format:
 
 Finish with exactly:
 
-`PLAN_REVIEW_COMPLETE | findings=<count> | verdict=APPROVE|CHANGES_REQUIRED`
+`PLAN_REVIEW_COMPLETE | findings=<count> | verdict=APPROVE|CHANGES_REQUIRED | alignment=<0-100>%`
+
+Only use `APPROVE` when there are no BLOCKING or IMPORTANT findings.
+
+`alignment` is your confidence, as a percentage, that the plan is ready for
+implementation as-is:
+- Start at 100% and subtract a penalty per unresolved finding: heavy for
+  BLOCKING, moderate for IMPORTANT, light for SUGGESTION.
+- From the second review round onward, also factor in how many findings from
+  your previous review were actually addressed in this revision — findings
+  you raised before and that are still unresolved weigh more heavily than new
+  ones.
+- This is a self-assessed confidence signal, not a precise metric; be
+  conservative rather than optimistic.
 
 Never truncate a finding: split it into `PART_1`, `PART_2`, etc. when necessary.
